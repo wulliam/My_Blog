@@ -2,6 +2,7 @@
 import os
 from . import choose_settings
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = choose_settings.DEBUG
 TEMPLATE_DEBUG = DEBUG
 # See https://docs.djangoproject.com/en/1.5/ref/settings/#allowed-hosts
@@ -9,13 +10,19 @@ ALLOWED_HOSTS = choose_settings.ALLOWED_HOSTS
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
-    ('laike9m', 'laike9m@gmail.com'),
+    ('wulliam', 'wulliam@gmail.com'),
 )
 
 MANAGERS = ADMINS
 
-DATABASES = choose_settings.DATABASES
+#DATABASES = choose_settings.DATABASES
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 
 # Local time zone for this installation. Choices can be found here:
@@ -78,11 +85,11 @@ STATICFILES_FINDERS = (
 SECRET_KEY = 'v2x^#lrv$(xp3ost97tbr4wvodd6l6obm_f3s%a^6pdmpxhw=g'
 
 # List of callables that know how to import templates from various sources.
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-    # 'django.template.loaders.eggs.Loader',
-)
+#TEMPLATE_LOADERS = (
+#    'django.template.loaders.filesystem.Loader',
+#    'django.template.loaders.app_directories.Loader',
+#    # 'django.template.loaders.eggs.Loader',
+#)
 
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
@@ -104,6 +111,22 @@ if 'MIDDLEWARE_CLASSES_ADDITION_LAST' in dir(choose_settings):
     MIDDLEWARE_CLASSES += choose_settings.MIDDLEWARE_CLASSES_ADDITION_LAST
 
 ROOT_URLCONF = 'my_blog.urls'
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'my_blog.wsgi.application'
@@ -163,7 +186,7 @@ LOGGING = {
 
 import platform
 pc = platform.node()
-if pc != 'dell-PC' and pc != 'laike9m.local':
+if pc !='localhost' and pc != 'dell-PC' and pc != 'laike9m.local':
     EMAIL_USE_TLS = True
     EMAIL_HOST = 'smtp.mailgun.org'
     EMAIL_PORT = 587

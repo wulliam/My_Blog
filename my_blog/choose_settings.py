@@ -3,7 +3,7 @@ import os
 import platform
 
 node = platform.node()
-dev_machines = ('dell-PC', 'laike9m.local',)
+dev_machines = ('localhost','ldell-PC', 'laike9m.local',)
 
 if node in dev_machines:
     # folder My_Blog

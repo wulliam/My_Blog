@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from datetime import datetime
 
@@ -17,30 +18,32 @@ import markdown2
 from unidecode import unidecode
 from taggit.managers import TaggableManager
 
+from django.utils.encoding import python_2_unicode_compatible
 
 upload_dir = 'content/BlogPost/%s/%s'
 
+def get_upload_md_name(self, filename):
+    if self.pub_date:
+        year = self.pub_date.year   # always store in pub_year folder
+    else:
+        year = datetime.now().year
+    upload_to = upload_dir % (year, self.title + '.md')
+    return upload_to
 
+def get_html_name(self, filename):
+    if self.pub_date:
+        year = self.pub_date.year
+    else:
+        year = datetime.now().year
+    upload_to = upload_dir % (year, filename)
+    return upload_to
+
+@python_2_unicode_compatible
 class BlogPost(models.Model):
 
     class Meta:
         ordering = ['-pub_date']    # ordered by pub_date descending when retriving
 
-    def get_upload_md_name(self, filename):
-        if self.pub_date:
-            year = self.pub_date.year   # always store in pub_year folder
-        else:
-            year = datetime.now().year
-        upload_to = upload_dir % (year, self.title + '.md')
-        return upload_to
-
-    def get_html_name(self, filename):
-        if self.pub_date:
-            year = self.pub_date.year
-        else:
-            year = datetime.now().year
-        upload_to = upload_dir % (year, filename)
-        return upload_to
 
     CATEGORY_CHOICES = (
         ('programming', 'Programming'),
@@ -80,14 +83,16 @@ class BlogPost(models.Model):
                             ContentFile(html.encode('utf-8')), save=False)
         self.html_file.close()
 
-        super().save(*args, **kwargs)
+        super(BlogPost,self).save(*args, **kwargs)
 
     def display_html(self):
-        with open(self.html_file.path, encoding='utf-8') as f:
-            return f.read()
+        #with open(self.html_file.path, encoding='utf-8') as f:
+        with open(self.html_file.path, 'r') as f:
+            return f.read().decode('utf-8')
 
     def get_absolute_url(self):
-        return reverse('css3two_blog.views.blogpost',
+        from .views import blogpost
+        return reverse(blogpost,
                        kwargs={'slug': self.slug, 'post_id': self.id})
 
 
@@ -98,13 +103,17 @@ def blogpost_delete(instance, **kwargs):
     if instance.html_file:
         instance.html_file.delete(save=False)
 
+def get_upload_img_name(self, filename):
+    upload_to = upload_dir % ('images', filename)  # filename involves extension
+    return upload_to
 
+@python_2_unicode_compatible
 class BlogPostImage(models.Model):
 
-    def get_upload_img_name(self, filename):
-        upload_to = upload_dir % ('images', filename)  # filename involves extension
-        return upload_to
 
     blogpost = models.ForeignKey(BlogPost, related_name='images')
     image = models.ImageField(upload_to=get_upload_img_name)
+
+    def __str__(self):
+        return "image"
 

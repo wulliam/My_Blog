@@ -1,4 +1,4 @@
-django>=1.8,<1.9
+django>=1.8,<=1.155555
 requests
 django-contact-form
 django-taggit
