@@ -120,6 +120,7 @@ elif type(self.body) == str:
 > EDIT：2014-2-20 加入**文件路径结构**小节，增补其它小节内容  
 > EDIT：2014-6-25 django CMS 已经支持 Python3.4  
 > EDIT：2014-8-29 强调了博客只支持 Py3  
+> EDIT：2017-3-4 博客支持 Python2.7.10 and Django1.10.5  
 
 
 [blog]: https://github.com/laike9m/My_Blog
